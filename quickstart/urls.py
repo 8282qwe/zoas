@@ -11,5 +11,6 @@ urlpatterns = [
     path('zoas-api/participation/', views.ParticipationViewSet),
     path('zoas-api/stt-view/', views.SttViewSet),
     path('zoas-api/summary-view/', views.SummaryViewSet),
+    path('zoas-api/join/', views.joinViewSet),
 ]
 
