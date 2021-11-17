@@ -45,7 +45,7 @@ def ParticipationViewSet(request):
             Summary.objects.create(class_id=dictionary[2], summary_file=summarybuffer).save()
     if queryset.count() == 0:
         return HttpResponse(status=400)
-    return JsonResponse(serializer.data, safe=False)
+    return JsonResponse({"result": serializer.data}, safe=False)
 
 
 def SttViewSet(request):
@@ -57,13 +57,13 @@ def SttViewSet(request):
     buffer4 = ""
     queryset = Stt.objects.get(class_id=data["class_id"])
 
-    with open("stt/" + queryset.stt_file, encoding='utf-8') as txtfile:
+    with open("stt/" + queryset.stt_file, "r", encoding='utf-8') as txtfile:
         buffer = txtfile.read()
-    with open("summary/" + queryset.stt_file, encoding='utf-8') as txtfile:
+    with open("summary/" + queryset.stt_file, "r", encoding='utf-8') as txtfile:
         buffer2 = txtfile.read()
-    with open("keyword/" + queryset.stt_file, encoding='utf-8') as txtfile:
+    with open("keyword/" + queryset.stt_file, "r", encoding='utf-8') as txtfile:
         buffer3 = txtfile.read()
-    with open("timestamp/" + queryset.stt_file, encoding='utf-8') as txtfile:
+    with open("timestamp/" + queryset.stt_file, "r", encoding='utf-8') as txtfile:
         buffer4 = txtfile.read()
     return JsonResponse({'stt_contents': buffer,
                          'summary_contents': buffer2,

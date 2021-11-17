@@ -57,7 +57,7 @@ def summary_convert(file_name):
         # penalty=penalty,
         stopwords=stop_words,
         diversity=0.3,
-        num_keywords=100,
+        num_keywords=20,
         num_keysents=15,
         verbose=False,
         bias=decaying_factor,
@@ -65,7 +65,7 @@ def summary_convert(file_name):
     )
 
     file = open(save_keyword_path + file_name + '.txt', "w", encoding="UTF8")
-    for word, r in sorted(keywords.items(), key=lambda x: x[1], reverse=True)[:100]:
+    for word, r in sorted(keywords.items(), key=lambda x: x[1], reverse=True)[:20]:
         print('%8s:\t%.4f' % (word, r))
         file.write(word + '\n')
 

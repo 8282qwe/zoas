@@ -16,10 +16,9 @@ import sys
 
 """ 업로드하는 부분 """
 
-credential_path = "myzoas.json"
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credential_path
 
 def upload_blob(source_file_name):
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/home/jangwoo/zoas/myzoas.json"
     storage_client = storage.Client()
     destination_blob_name = source_file_name + ".flac"
     bucket_name = "zoastts-1"
@@ -36,6 +35,7 @@ def upload_blob(source_file_name):
 def google_transcribe(filename):
     gcs_uri = 'gs://zoastts-1/' + filename + ".flac"
     transcript = ""
+    buffer =""
 
     client = speech.SpeechClient()
     audio = speech.RecognitionAudio(uri=gcs_uri)
@@ -53,21 +53,16 @@ def google_transcribe(filename):
     operation = client.long_running_recognize(config=config, audio=audio)
 
     response = operation.result()  # 타임아웃 옵션 없음
-
+    f = open("timestamp/" + filename + ".txt", 'w', encoding='UTF-8')
     for result in response.results:
         alternative = result.alternatives[0]
         transcript += alternative.transcript + "\n" # transcript 저장 부분
-        f = open("timestamp/"+filename+".txt", 'w', encoding='UTF-8')
-        for result in response.results:
-            alternative = result.alternatives[0]
-            transcript += alternative.transcript + "\n"  # transcript 저장 부분
-            for word_info in alternative.words:
-                word = word_info.word
-                start_time = word_info.start_time
-                buffer = word + "," + str(start_time.total_seconds()) + "\n"
-                f.write(buffer)
-
-        f.close()
+        for word_info in alternative.words:
+            word = word_info.word
+            start_time = word_info.start_time
+            buffer = buffer + word + "," + str(start_time.total_seconds()) + "\n"
+    f.write(buffer)
+    f.close()
     transcript_filename = "stt/"+filename+".txt"
     f = open(transcript_filename, 'w', encoding='UTF-8')
     f.write(transcript)
